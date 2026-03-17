@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String?    // Optionnel au début (invitation)
+  role      String     @default("USER") // ADMIN, USER, LECTOR
+  status    String     @default("PENDING") // PENDING, ACTIVE
+  documents Document[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  documents Document[]
+}
+
+model Document {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  size        Int
+  path        String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  ownerId     String?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  uploadedBy  String?  // Garde trace de l'email même si l'utilisateur est supprimé
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

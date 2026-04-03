@@ -3,6 +3,7 @@ import { AuthRequest } from '../middlewares/auth';
 import prisma from '../utils/prisma';
 import path from 'path';
 import fs from 'fs';
+import { UPLOAD_DIR } from '../config';
 
 export const uploadFile = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -38,8 +39,8 @@ export const uploadFile = async (req: AuthRequest, res: Response): Promise<void>
         const finalDisplayName = `${baseName}_${emailPrefix}_${randomDigits}${originalExt}`;
 
         // Renommer physiquement le fichier sur le disque dur
-        const oldPhysicalPath = path.join(__dirname, '../../uploads', file.filename);
-        const newPhysicalPath = path.join(__dirname, '../../uploads', finalDisplayName);
+        const oldPhysicalPath = path.join(UPLOAD_DIR, file.filename);
+        const newPhysicalPath = path.join(UPLOAD_DIR, finalDisplayName);
 
         if (fs.existsSync(oldPhysicalPath)) {
             fs.renameSync(oldPhysicalPath, newPhysicalPath);
@@ -143,7 +144,7 @@ export const downloadDocument = async (req: AuthRequest, res: Response): Promise
             return;
         }
 
-        const filePath = path.join(__dirname, '../../uploads', document.path);
+        const filePath = path.join(UPLOAD_DIR, document.path);
         if (!fs.existsSync(filePath)) {
             res.status(404).json({ message: 'File not found on disk' });
             return;
@@ -260,7 +261,7 @@ export const deleteAllDocuments = async (req: AuthRequest, res: Response): Promi
 
         // Supprimer tous les fichiers physiques
         for (const doc of documents) {
-            const filePath = path.join(__dirname, '../../uploads', doc.path);
+            const filePath = path.join(UPLOAD_DIR, doc.path);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
@@ -305,8 +306,8 @@ export const renameDocument = async (req: AuthRequest, res: Response): Promise<v
         const newName = name.trim();
 
         // Renommer le fichier physiquement sur le disque dur
-        const oldPhysicalPath = path.join(__dirname, '../../uploads', document.path);
-        const newPhysicalPath = path.join(__dirname, '../../uploads', newName);
+        const oldPhysicalPath = path.join(UPLOAD_DIR, document.path);
+        const newPhysicalPath = path.join(UPLOAD_DIR, newName);
 
         if (fs.existsSync(oldPhysicalPath) && oldPhysicalPath !== newPhysicalPath) {
             fs.renameSync(oldPhysicalPath, newPhysicalPath);
@@ -349,7 +350,7 @@ export const deleteDocument = async (req: AuthRequest, res: Response): Promise<v
         }
 
         // Supprimer le fichier physique
-        const filePath = path.join(__dirname, '../../uploads', document.path);
+        const filePath = path.join(UPLOAD_DIR, document.path);
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
         }

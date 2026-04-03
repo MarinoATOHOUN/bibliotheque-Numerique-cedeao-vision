@@ -46,7 +46,7 @@ const App: React.FC = () => {
             type: getFileTypeFromExtension(doc.name),
             customClass: doc.category.name,
             uploadedBy: doc.uploadedBy || (doc.owner?.email) || null,
-            url: `http://localhost:5000/api/documents/download/${doc.id}`
+            url: `${(import.meta as any).env.PROD ? '' : 'http://localhost:5000'}/api/documents/download/${doc.id}`
           }));
           setDocuments(formattedDocs);
 
@@ -100,7 +100,7 @@ const App: React.FC = () => {
           type: getFileTypeFromExtension(response.data.name),
           customClass: response.data.category.name,
           uploadedBy: response.data.uploadedBy || null,
-          url: `http://localhost:5000/api/documents/download/${response.data.id}`
+          url: `${(import.meta as any).env.PROD ? '' : 'http://localhost:5000'}/api/documents/download/${response.data.id}`
         };
         setDocuments(prev => [...prev, newDoc]);
       } catch (e) {

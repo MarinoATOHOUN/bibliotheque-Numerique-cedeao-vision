@@ -1,0 +1,11 @@
+node_modules
+server/node_modules
+dist
+server/dist
+.git
+.env
+uploads
+server/uploads
+*.db
+*.db-journal
+test_prisma.ts

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+// En mode développement (vite local), utiliser localhost:5000/api
+// En production (déployé), utiliser /api pour que ce soit relatif au même domaine
+const API_URL = (import.meta as any).env.PROD ? '/api' : 'http://localhost:5000/api';
 
 const api = axios.create({
     baseURL: API_URL,

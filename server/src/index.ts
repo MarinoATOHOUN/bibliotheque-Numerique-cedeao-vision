@@ -30,8 +30,8 @@ const frontendPath = path.join(__dirname, '../../dist');
 app.use(express.static(frontendPath));
 
 // Pour toute autre route non-API, renvoyer l'index.html du frontend (pour le routing React)
-app.get('*', (req, res) => {
-    if (!req.url.startsWith('/api/') && !req.url.startsWith('/uploads/')) {
+app.use((req, res) => {
+    if (req.method === 'GET' && !req.url.startsWith('/api/') && !req.url.startsWith('/uploads/')) {
         res.sendFile(path.join(frontendPath, 'index.html'));
     } else {
         res.status(404).json({ message: 'API route not found' });
